@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import Icon from 'react-native-vector-icons/dist/FontAwesome'
+import Icon from 'react-native-vector-icons/FontAwesome'
 import commonStyles from '../commonStyles'
 import moment from 'moment'
 import 'moment/locale/pt-br'
