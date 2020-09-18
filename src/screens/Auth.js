@@ -3,30 +3,66 @@ import {
     ImageBackground, 
     Text, 
     StyleSheet, 
-    Platform,
-    TextInput, 
     TouchableOpacity,
     View,
     Alert } from 'react-native'
 
+import axios from 'axios'
+
 import backgroundImage from '../../assets/imgs/login.jpg'
 import commonStyles from '../commonStyles'
+import AuthInput from '../components/AuthInput'
+
+import { server, showError, showSuccess } from '../common'
+
+const initialState = {
+    name: '',
+    email: '',
+    password: '',
+    confirmrPassword: '',
+    stageNew: false
+}
 
 export default class Auth extends Component {
 
     state = {
-        name: '',
-        email: '',
-        password: '',
-        confirmrPassword: '',
-        stageNew: false
+        ...initialState
     }
 
     signinOrSignup = () => {
         if(this.state.stageNew) {
-            Alert.alert('Sucesso!', 'Criar conta')
+            this.signup()
         } else {
-            Alert.alert('Sucesso', 'Logar')
+            this.signin()
+        }
+    }
+
+    signup = async () => {
+        try {
+            await axios.post(`${server}/Usuario/registrar`, {
+                Nome: this.state.name,
+                Email: this.state.email,
+                Senha: this.state.password
+            })
+
+            showSuccess(`Seja bem-vindo ${this.state.name}!`)
+            this.setState({ ...initialState })
+        } catch(e) {
+            showError(e)
+        }
+    }
+
+    signin = async () => {
+        try {
+            const res = await axios.post(`${server}/Usuario/autenticar`, {
+                Email: this.state.email,
+                Senha: this.state.password
+            })
+
+            axios.defaults.headers.common['Authorization'] = `bearer ${res.data.token}`
+            this.props.navigation.navigate('Home')
+        } catch(e) {
+            showError(e)
         }
     }
 
@@ -41,19 +77,23 @@ export default class Auth extends Component {
                     </Text>
                     {
                         this.state.stageNew && 
-                        <TextInput placeholder='Nome' value={this.state.name}
+                        <AuthInput icon='user' 
+                            placeholder='Nome' value={this.state.name}
                             style={styles.input}
                             onChangeText={name => this.setState({ name })} />
                     }
-                    <TextInput placeholder='E-mail' value={this.state.email}
+                    <AuthInput icon='at' 
+                        placeholder='E-mail' value={this.state.email}
                         style={styles.input}
                         onChangeText={email => this.setState({ email })} />
-                    <TextInput placeholder='Senha' value={this.state.password}
+                    <AuthInput icon='lock' 
+                        placeholder='Senha' value={this.state.password}
                         style={styles.input} secureTextEntry={true}
                         onChangeText={password => this.setState({ password })} />
                     {
                         this.state.stageNew && 
-                        <TextInput placeholder='Confirmação de Senha' value={this.state.confirmrPassword}
+                        <AuthInput icon='asterisk' 
+                            placeholder='Confirmação de Senha' value={this.state.confirmrPassword}
                             style={styles.input} secureTextEntry={true}
                             onChangeText={confirmrPassword => this.setState({ confirmrPassword })} />
                     }
@@ -103,14 +143,14 @@ const styles = StyleSheet.create({
     },
     input: {
         marginTop: 10,
-        backgroundColor: '#FFF',
-        padding: Platform.OS == 'ios' ? 15 : 10
+        backgroundColor: '#FFF'
     },
     button: {
         backgroundColor: '#080',
         marginTop: 10,
         padding: 10,
-        alignItems: 'center'
+        alignItems: 'center',
+        borderRadius: 7
     },
     buttonText: {
         fontFamily: commonStyles.fontFamily,
