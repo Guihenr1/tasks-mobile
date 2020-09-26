@@ -17,8 +17,8 @@ import { server, showError, showSuccess } from '../common'
 
 const initialState = {
     name: '',
-    email: '',
-    password: '',
+    email: 'guilherme@gmail.com',
+    password: '123456',
     confirmrPassword: '',
     stageNew: false
 }
@@ -67,6 +67,17 @@ export default class Auth extends Component {
     }
 
     render() {
+        const validations = []
+        validations.push(this.state.email && this.state.email.includes('@'))
+        validations.push(this.state.password && this.state.password.length >= 6)
+
+        if (this.state.stageNew) {
+            validations.push(this.state.name && this.state.name.trim().length >= 3)
+            validations.push(this.state.password === this.state.confirmrPassword)
+        }
+
+        const validForm = validations.reduce((t, a) => t && a)
+        
         return (
             <ImageBackground source={backgroundImage}
                 style={styles.background}>
@@ -97,8 +108,9 @@ export default class Auth extends Component {
                             style={styles.input} secureTextEntry={true}
                             onChangeText={confirmrPassword => this.setState({ confirmrPassword })} />
                     }
-                    <TouchableOpacity onPress={this.signinOrSignup}>
-                        <View style={styles.button}>
+                    <TouchableOpacity onPress={this.signinOrSignup}
+                        disabled={!validForm}>
+                        <View style={[styles.button, validForm ? {} : { backgroundColor: '#880006' }]}>
                             <Text style={styles.buttonText}>
                                 {this.state.stageNew ? 'Registrar' : 'Entrar'}
                             </Text>

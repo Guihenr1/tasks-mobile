@@ -8,10 +8,10 @@ import Swipeable from 'react-native-gesture-handler/Swipeable'
 
 export default props => {
 
-    const doneOrNotStyle = props.doneAt != null ? 
+    const doneOrNotStyle = props.concluido != null ? 
         { textDecorationLine: 'line-through' } : {}
 
-    const date = props.doneAt ? props.doneAt : props.estimateAt
+    const date = props.concluido ? props.concluido : props.estimado
     const formattedDate = moment(date).locale('pt-br')
         .format('ddd, D [de] MMMM')
 
@@ -43,11 +43,11 @@ export default props => {
                 <TouchableWithoutFeedback
                     onPress={() => props.onToggleTask(props.id)}>
                     <View style={styles.checkContainer}>
-                        {getCheckView(props.doneAt)}
+                        {getCheckView(props.concluido)}
                     </View>
                 </TouchableWithoutFeedback>
                 <View>
-                    <Text style={[styles.desc, doneOrNotStyle]}>{props.desc}</Text>
+                    <Text style={[styles.descricao, doneOrNotStyle]}>{props.descricao}</Text>
                     <Text style={styles.date}>{formattedDate}</Text>
                 </View>
             </View>
@@ -58,7 +58,7 @@ export default props => {
 function getCheckView(doneAt) {
     if(doneAt != null) {
         return (
-            <View style={styles.done}>
+            <View style={styles.concluido}>
                 <Icon name='check' size={20} color='#FFF'></Icon>
             </View>
         )
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#555'
     },
-    done: {
+    concluido: {
         height: 25,
         width: 25,
         borderRadius: 13,
