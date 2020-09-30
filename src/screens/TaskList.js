@@ -20,13 +20,7 @@ const initialState = {
     showDoneTasks: true,
     showAddTask: false,
     visibleTasks: [],
-    tasks: [{
-        "id": "5efc5920-bdf8-43bf-8a52-0cca08e62b1a",
-        "descricao": "Opa vai limpar a casa",
-        "estimado": "2020-09-27T00:00:00",
-        "concluido": null,
-        "status": "Pendente"
-    }]
+    tasks: []
 }
 
 export default class TaskList extends Component {
@@ -40,6 +34,7 @@ export default class TaskList extends Component {
         this.setState({
             showDoneTasks: savedState.showDoneTasks
         }, this.filterTasks)
+        this.loadTasks()
     }
 
     loadTasks = async () => {
@@ -47,6 +42,7 @@ export default class TaskList extends Component {
             const maxDate = moment()
             .add({ days: this.props.daysAhead })
             .format('YYYY-MM-DD')
+            Alert.alert('Sucesso!', maxDate)
             const res = await axios.get(`${server}/Tarefa/ObterTodas/${maxDate}`)
             this.setState({ tasks: res.data }, this.filterTasks)
         } catch (e) {
