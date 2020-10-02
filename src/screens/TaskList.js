@@ -42,7 +42,6 @@ export default class TaskList extends Component {
             const maxDate = moment()
             .add({ days: this.props.daysAhead })
             .format('YYYY-MM-DD')
-            Alert.alert('Sucesso!', maxDate)
             const res = await axios.get(`${server}/Tarefa/ObterTodas/${maxDate}`)
             this.setState({ tasks: res.data }, this.filterTasks)
         } catch (e) {
@@ -137,10 +136,10 @@ export default class TaskList extends Component {
                             <Icon name={'bars'}
                                 size={20} color={commonStyles.colors.secondary} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this.toggleFilter}>
+                        {/* <TouchableOpacity onPress={this.toggleFilter}>
                             <Icon name={this.state.showDoneTasks ? 'eye' : 'eye-slash'}
                                 size={20} color={commonStyles.colors.secondary} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                     <View style={styles.titleBar}>
                         <Text style={styles.title}>{this.props.title}</Text>
